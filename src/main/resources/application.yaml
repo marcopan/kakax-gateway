@@ -1,0 +1,46 @@
+
+server:
+  port: 8000
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: gateway_test
+          uri: https://github.com/
+          predicates:
+            - Path=/github
+        - id: gateway_main
+          uri: lb://kakax.main
+          predicates:
+            - Path=/main/**
+            - Method=GET
+          filters:
+            - StripPrefix=1
+  application:
+    name: kakax_gateway
+#        - id: gatewaty_test
+#         uri: lb://kakax_main
+#  predicates:
+#          - Method=GET
+#     filters:
+#      - AddRequestParameter=age, three
+#      - name: Hystrix
+#        args:
+#          name: fallbackcmd
+#   fallbackUri: forward:/fallback
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
