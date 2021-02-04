@@ -1,2 +1,2 @@
-FROM centos-java
+FROM prince/centos-java
 RUN yum -y update
